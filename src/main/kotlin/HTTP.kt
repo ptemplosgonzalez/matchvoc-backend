@@ -1,0 +1,17 @@
+package com
+
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.cors.routing.*
+
+fun Application.configureHTTP() {
+    install(CORS) {
+        anyHost() // Permite que tu web en VS Code y tu App se conecten
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Delete)
+    }
+}
