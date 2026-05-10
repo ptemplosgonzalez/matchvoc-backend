@@ -5,7 +5,6 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureExposed() {
-    // Leemos directo de variables de entorno, sin pasar por el YAML
     val host     = System.getenv("MYSQLHOST")           ?: "localhost"
     val port     = System.getenv("MYSQLPORT")           ?: "3306"
     val database = System.getenv("MYSQL_DATABASE")      ?: "matchvoc"
@@ -13,7 +12,7 @@ fun Application.configureExposed() {
     val password = System.getenv("MYSQL_ROOT_PASSWORD") ?: "root"
 
     val db = Database.connect(
-        url      = "jdbc:mysql://$host:$port/$database?useSSL=false&serverTimezone=UTC",
+        url      = "jdbc:mysql://$host:$port/$database?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true",
         driver   = "com.mysql.cj.jdbc.Driver",
         user     = user,
         password = password
