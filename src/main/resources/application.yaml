@@ -4,7 +4,7 @@ ktor:
   application:
     modules:
       - com.SerializationKt.configureSerialization
-      - com.ExposedKt.configureExposed
+      - com.DatabaseKt.configureExposed
       - com.SecurityKt.configureSecurity
       - com.ResourcesKt.configureResources
       - com.RoutingKt.configureRouting
