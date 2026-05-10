@@ -1,27 +1,24 @@
 package com
 
 import io.ktor.server.application.*
-import org.example.project.UserTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-// Asegúrate de importar tu objeto UserTable si está en otro archivo
-// import org.example.project.UserTable
 
 fun Application.configureExposed() {
-    val driverClass = environment.config.property("storage.driverClassName").getString()
-    val jdbcUrl = environment.config.property("storage.jdbcURL").getString()
-    val user = environment.config.property("storage.user").getString()
-    val password = environment.config.property("storage.password").getString()
+    // Leemos directo de variables de entorno, sin pasar por el YAML
+    val host     = System.getenv("MYSQLHOST")           ?: "localhost"
+    val port     = System.getenv("MYSQLPORT")           ?: "3306"
+    val database = System.getenv("MYSQL_DATABASE")      ?: "matchvoc"
+    val user     = System.getenv("MYSQLUSER")           ?: "root"
+    val password = System.getenv("MYSQL_ROOT_PASSWORD") ?: "root"
 
-    // Guardamos la conexión en una variable local
     val db = Database.connect(
-        url = jdbcUrl,
-        driver = driverClass,
-        user = user,
+        url      = "jdbc:mysql://$host:$port/$database?useSSL=false&serverTimezone=UTC",
+        driver   = "com.mysql.cj.jdbc.Driver",
+        user     = user,
         password = password
     )
 
-    // Usamos esa variable 'db' para la transacción
     transaction(db) {
         SchemaUtils.create(UserTable)
     }
