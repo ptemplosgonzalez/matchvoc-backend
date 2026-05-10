@@ -2,8 +2,9 @@ rootProject.name = "matchvoc-backend"
 
 pluginManagement {
     repositories {
+        google()
         mavenCentral()
-        gradlePluginPortal()
+        gradlePluginPortal() // <--- ESTA ES LA LÍNEA QUE FALTA
     }
 }
 

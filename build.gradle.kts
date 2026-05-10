@@ -1,35 +1,43 @@
 plugins {
-    // 1. Usamos Kotlin directamente
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
-    // Quitamos el plugin de ktor que da error y usamos la alternativa estable
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "8.3.0"
+    id("application")
 }
 
 group = "com"
 version = "1.0.0-SNAPSHOT"
 
-// Configuramos la aplicación manualmente
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
+configure<org.gradle.api.plugins.JavaApplication> {
+    mainClass.set("com.MainKt")
+}
 
+// FIX: usar named() en lugar de withType<> para apuntar exactamente al task shadowJar
+// FIX: agregar mergeServiceFiles() para que Ktor/Netty arranque correctamente en el JAR
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    isZip64 = true
+    archiveFileName.set("app.jar")
+    mergeServiceFiles()
     manifest {
-        // Cambiamos "io.ktor.server.netty.EngineMain" por tu ruta real
         attributes["Main-Class"] = "com.MainKt"
     }
 }
 
 dependencies {
-    // Ktor Server 2.3.12 (La más estable para evitar errores de 'convention')
     val ktor_version = "2.3.12"
+
+    // Ktor Server
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-config-yaml:$ktor_version")
@@ -41,12 +49,13 @@ dependencies {
     // Logs
     implementation("ch.qos.logback:logback-classic:1.4.11")
 
-    // Base de Datos para Railway
+    // Base de Datos (Exposed + MySQL)
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
     implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
     implementation("mysql:mysql-connector-java:8.0.33")
 
+    // Pruebas
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
 }
