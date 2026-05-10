@@ -1,5 +1,5 @@
 # Usamos Java 17 como definiste en tu Gradle
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-jammy AS builder
 WORKDIR /app
 # Copiamos el JAR que genera Shadow
 COPY build/libs/app.jar app.jar
