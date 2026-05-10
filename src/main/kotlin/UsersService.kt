@@ -1,15 +1,15 @@
-package org.example.project // Revisa que coincida con tu carpeta de src
+package com
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-// Esta es tu tabla exacta para usuarios (administradores y estudiantes)
+// Tabla de usuarios (administradores y estudiantes)
 object UserTable : Table("usuarios") {
     val id = integer("id").autoIncrement()
     val nombre = varchar("nombre", 100)
     val correo = varchar("correo", 100)
     val password = varchar("password", 100)
-    val role = varchar("role", 20) // Aquí guardaremos "admin" o "estudiante"
+    val role = varchar("role", 20) // "admin" o "estudiante"
     override val primaryKey = PrimaryKey(id)
 }
 
@@ -23,7 +23,6 @@ data class User(
 
 class UserService(private val database: Database) {
 
-    // Función para obtener todos los usuarios y verificar que la base responde
     fun getAllUsers(): List<User> = transaction(database) {
         UserTable.selectAll().map {
             User(
