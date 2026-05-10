@@ -1,6 +1,9 @@
 package com
 
 import com.routes.authRoutes
+import com.routes.carreraRoutes
+import com.routes.sectorRoutes
+import com.routes.tarjetaRoutes
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -11,5 +14,8 @@ fun Application.configureRouting() {
             call.respondText("MatchVoc API v1.0 — Online")
         }
         authRoutes()
+        sectorRoutes()
+        carreraRoutes()
+        tarjetaRoutes()
     }
 }
