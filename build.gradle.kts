@@ -14,24 +14,18 @@ java {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    kotlinOptions { jvmTarget = "17" }
 }
 
 configure<org.gradle.api.plugins.JavaApplication> {
     mainClass.set("com.MainKt")
 }
 
-// FIX: usar named() en lugar de withType<> para apuntar exactamente al task shadowJar
-// FIX: agregar mergeServiceFiles() para que Ktor/Netty arranque correctamente en el JAR
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
     isZip64 = true
     archiveFileName.set("app.jar")
     mergeServiceFiles()
-    manifest {
-        attributes["Main-Class"] = "com.MainKt"
-    }
+    manifest { attributes["Main-Class"] = "com.MainKt" }
 }
 
 dependencies {
@@ -45,6 +39,8 @@ dependencies {
     implementation("io.ktor:ktor-server-resources:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-server-cors:$ktor_version")
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
 
     // Logs
     implementation("ch.qos.logback:logback-classic:1.4.11")
@@ -54,6 +50,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
     implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
     implementation("mysql:mysql-connector-java:8.0.33")
+
+    // Seguridad
+    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("at.favre.lib:bcrypt:0.10.2")
 
     // Pruebas
     testImplementation(kotlin("test"))
