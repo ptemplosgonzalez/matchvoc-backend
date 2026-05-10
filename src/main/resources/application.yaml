@@ -11,6 +11,6 @@ ktor:
 
 storage:
   driverClassName: "com.mysql.cj.jdbc.Driver"
-  jdbcURL: "jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQL_DATABASE}"
-  user: "${MYSQLUSER}"
-  password: "${MYSQL_ROOT_PASSWORD}"
+  jdbcURL: "jdbc:mysql://${MYSQLHOST:-localhost}:${MYSQLPORT:-3306}/${MYSQL_DATABASE:-matchvoc}"
+  user: "${MYSQLUSER:-root}"
+  password: "${MYSQL_ROOT_PASSWORD:-root}"
