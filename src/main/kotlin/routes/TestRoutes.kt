@@ -44,6 +44,26 @@ fun Route.testRoutes() {
 
     authenticate("auth-jwt") {
 
+        // GET respuestas individuales por usuario
+        get("/api/test/respuestas/{idUsuario}") {
+            val idUsuario = call.parameters["idUsuario"]?.toIntOrNull()
+                ?: return@get call.respond(HttpStatusCode.BadRequest, mapOf("error" to "ID inválido"))
+
+            val respuestas = transaction {
+                (RespuestasIndividuales innerJoin Tarjetas innerJoin Carreras innerJoin Sectores)
+                    .select { RespuestasIndividuales.idUsuario eq idUsuario }
+                    .map {
+                        mapOf(
+                            "pregunta" to it[Tarjetas.texto],
+                            "sector" to it[Sectores.nombre],
+                            "carrera" to it[Carreras.nombre],
+                            "respuesta" to it[RespuestasIndividuales.leIntereso].toString()
+                        )
+                    }
+            }
+            call.respond(respuestas)
+        }
+
         get("/api/test/progress/{idUsuario}") {
             val idUsuario = call.parameters["idUsuario"]?.toIntOrNull()
                 ?: return@get call.respond(HttpStatusCode.BadRequest, mapOf("error" to "ID inválido"))
