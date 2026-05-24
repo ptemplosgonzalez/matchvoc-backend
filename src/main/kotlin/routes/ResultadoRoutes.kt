@@ -40,7 +40,8 @@ data class DiagnosticoCompleto(
 data class RespuestaHistorial(
     val pregunta: String,
     val respuesta: String,
-    val sector: String
+    val sector: String,
+    val carrera: String = ""  // <-- agregar
 )
 fun Route.resultadoRoutes() {
 
@@ -57,7 +58,8 @@ fun Route.resultadoRoutes() {
                         RespuestaHistorial(
                             pregunta  = it[Tarjetas.texto],
                             respuesta = it[RespuestasIndividuales.leIntereso].toString(),
-                            sector    = it[Sectores.nombre]
+                            sector    = it[Sectores.nombre],
+                            carrera   = it[Carreras.nombre]  // <-- agregar
                         )
                     }
             }
